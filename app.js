@@ -54,13 +54,17 @@ function getBase64Image(file) {
 function makeApiCall(base64Image) {
     const apiUrl = '/face/search'; // Replace this with the actual API URL
     const url = document.getElementById("urlInput").value;
-    let payload ={ "image" : base64Image}
+    let payload = JSON.stringify({ "image" : base64Image})
     
     return fetch(url+apiUrl, {
         method: 'POST',
         maxBodyLength: Infinity,
         mode: "no-cors",
-     
+        headers: { 
+                'Content-Type': 'application/json'
+            
+           
+          },
         body: payload
     })
     .then((response) => response.json())
