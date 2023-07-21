@@ -51,26 +51,29 @@ function getBase64Image(file) {
 }
 
 // Function to make API call
-function makeApiCall(base64Image) {
+async function makeApiCall(base64Image) {
     const apiUrl = '/face/search'; // Replace this with the actual API URL
     const url = document.getElementById("urlInput").value;
-    let payload = JSON.stringify({ "image" : base64Image})
-    
-    return fetch(url+apiUrl, {
-        method: 'POST',
-        maxBodyLength: Infinity,
-        mode: "no-cors",
-        headers: { 
-                'Content-Type': 'application/json'
-            
-           
-          },
-        body: payload
-    })
-    .then((response) => response.json())
-    .catch((error) => {
-        console.error('Error:', error);
+    let payload = JSON.stringify({ image : base64Image});
+    // const headers = new Headers();
+    // headers.append('Content-Type', 'application/json');
+    const headers = {
+      "Content-Type": "application/json",
+    }
+
+    try {
+    const response = await fetch(url + apiUrl, {
+      method: 'POST',
+      // mode: "no-cors",
+      cache: 'no-cache',
+      headers: headers,
+      body: payload
     });
+    return await response.json();
+  } catch (error) {
+    console.error('Error:', error);
+    console.log(error, "error=============================");
+  }
 }
 
 // Function to display the response
@@ -105,6 +108,7 @@ function capturePhoto() {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then((stream) => {
           const video = document.createElement('video');
+          video.width = 300;
           const imagePreview = document.getElementById("imgPreview");
           imagePreview.innerHTML = "";
           imagePreview.appendChild(video);
